@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entorno virtual
+venv/
+.venv/
+
+# Archivos de Python
+*.log
+
+# Archivos generados
+build/
+dist/
+
+# PyInstaller
+*.spec
+
+# Datos locales
+datos/
+*.xlsx
+
+# PDFs generados
+*.pdf
+
+# Configuración local
+.env
+
+# IDE
+.vscode/
+.idea/
