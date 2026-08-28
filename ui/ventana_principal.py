@@ -7,6 +7,7 @@ from ui.formulario_producto import FormularioProducto
 from ui.ventana_venta import VentanaVenta
 from ui.historial_ventas import HistorialVentas
 from ui.ventana_presupuesto import VentanaPresupuesto
+from ui.historial_presupuesto import VentanaHistorialPresupuestos
 
 class VentanaPrincipal:
 
@@ -607,6 +608,11 @@ class VentanaPrincipal:
         )
 
 
+
+    def abrir_historial_presupuestos(self):
+        VentanaHistorialPresupuestos(
+            self.ventana
+        )
     # ==========================================
     # BUSCAR PRODUCTOS
     # ==========================================
@@ -1106,7 +1112,7 @@ class VentanaPrincipal:
 
         menu_presupuestos.add_command(
             label="Historial de presupuestos",
-    #        command=self.ver_presupuestos
+            command=self.abrir_historial_presupuestos
         )
 
         barra_menu.add_cascade(
