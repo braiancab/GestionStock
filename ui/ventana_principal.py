@@ -8,6 +8,7 @@ from ui.ventana_venta import VentanaVenta
 from ui.historial_ventas import HistorialVentas
 from ui.ventana_presupuesto import VentanaPresupuesto
 from ui.historial_presupuesto import HistorialPresupuestos
+from ui.actualizar_productos import VentanaActualizarPrecios
 
 class VentanaPrincipal:
 
@@ -613,6 +614,11 @@ class VentanaPrincipal:
         HistorialPresupuestos(
             self.ventana
         )
+
+    def abrir_actualizar_precios(self):
+        VentanaActualizarPrecios(
+            ventana_padre=self.ventana, callback_actualizado=self.cargar_productos
+        )
     # ==========================================
     # BUSCAR PRODUCTOS
     # ==========================================
@@ -1078,26 +1084,11 @@ class VentanaPrincipal:
             menu=menu_ventas
         )
 
-        # ==========================
-        # MENU HISTORIAL
-        # ==========================
-
-        menu_historial = tk.Menu(
-            barra_menu,
-            tearoff=0,
-            font=("Arial", 14)
-        )
-
-        menu_historial.add_command(
-            label="Ver historial de ventas",
+        menu_ventas.add_command(
+            label="Ver historial ventas",
             command=self.abrir_historial_ventas
         )
-
-        barra_menu.add_cascade(
-            label="Historial",
-            menu=menu_historial
-        )
-
+       
 
         menu_presupuestos = tk.Menu(
             barra_menu,
@@ -1119,6 +1110,26 @@ class VentanaPrincipal:
             label="Presupuestos",
             menu=menu_presupuestos
         )
+
+        # ==========================
+        # ASIGNAR MENU
+        # ==========================
+        
+        menu_actualizar = tk.Menu(
+            barra_menu,
+            tearoff=0,
+            font=("Arial", 14)
+        )
+        barra_menu.add_cascade(
+            label="Actualizar",
+            menu=menu_actualizar
+        )
+        menu_actualizar.add_command(
+            label="Actualizar productos",
+            command=self.abrir_actualizar_precios
+        )
+
+             
 
         # ==========================
         # ASIGNAR MENU
