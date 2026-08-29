@@ -13,7 +13,7 @@ class ExcelService:
     def __init__(self, rubro=None):
 
         # Carpeta de datos de GestionStock
-        carpeta_datos = (
+        self.carpeta_datos = (
             Path.home()
             / "AppData"
             / "Local"
@@ -21,7 +21,7 @@ class ExcelService:
             / "datos"
         )
 
-        carpeta_datos.mkdir(
+        self.carpeta_datos.mkdir(
             parents=True,
             exist_ok=True
         )
@@ -33,7 +33,7 @@ class ExcelService:
         if rubro in self.RUBROS:
 
             self.ruta_excel = (
-                carpeta_datos / self.RUBROS[rubro]
+                self.carpeta_datos / self.RUBROS[rubro]
             )
 
         else:
@@ -540,3 +540,60 @@ class ExcelService:
                 )
 
         return variantes
+
+
+    # ==========================================
+    # ACTUALIZAR PRECIOS POR PORCENTAJE
+    # ==========================================
+    # ==========================================
+    # ACTUALIZAR PRECIOS POR PORCENTAJE
+    # ==========================================
+    def actualizar_precios_por_porcentaje(self, porcentaje, rubro=None):
+      """Aplica un porcentaje de aumento o descuento a los precios.
+
+      :param porcentaje: float (ej. 15 para +15%, -10 para -10%)
+      :param rubro: str ('ferreteria', 'refrigeracion', 'electricidad' o None
+      para todos)
+      :return: int (cantidad de productos modificados)
+      """
+      factor = 1 + (porcentaje / 100.0)
+      productos_modificados = 0
+
+      # Determinar qué rubros procesar
+      rubros_a_procesar = [rubro] if rubro in self.RUBROS else list(self.RUBROS)
+
+      for r in rubros_a_procesar:
+        ruta = self.carpeta_datos / self.RUBROS[r]
+
+        if not ruta.exists():
+          continue
+
+        wb = load_workbook(ruta)
+        ws = wb["Productos"]
+
+        for fila in range(2, ws.max_row + 1):
+          id_celda = ws.cell(row=fila, column=1).value
+          precio_celda = ws.cell(row=fila, column=6).value
+
+          if id_celda is not None and precio_celda is not None:
+            try:
+              val_clean = (
+                  str(precio_celda)
+                  .replace("$", "")
+                  .replace(",", "")
+                  .replace(" ", "")
+                  .strip()
+              )
+              precio_actual = float(val_clean)
+              nuevo_precio = round(precio_actual * factor, 2)
+
+              # Guardar el nuevo valor
+              ws.cell(row=fila, column=6).value = nuevo_precio
+              productos_modificados += 1
+            except ValueError:
+              continue
+
+        wb.save(ruta)
+        wb.close()
+
+      return productos_modificados

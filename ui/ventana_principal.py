@@ -1125,7 +1125,7 @@ class VentanaPrincipal:
             menu=menu_actualizar
         )
         menu_actualizar.add_command(
-            label="Actualizar productos",
+            label="Actualizar precios",
             command=self.abrir_actualizar_precios
         )
 

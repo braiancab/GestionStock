@@ -1,7 +1,6 @@
-from pathlib import Path
 import customtkinter as ctk
-from openpyxl import load_workbook
 from tkinter import messagebox
+from services.excel_service import ExcelService
 
 
 class VentanaActualizarPrecios:
@@ -10,20 +9,14 @@ class VentanaActualizarPrecios:
     self.ventana_padre = ventana_padre
     self.callback_actualizado = callback_actualizado
 
-    # Ruta base de los archivos Excel por rubro
-    self.carpeta_datos = (
-        Path.home()
-        / "AppData"
-        / "Local"
-        / "GestionStock"
-        / "datos"
-    )
+    # Servicio general de Excel sin rubro fijo
+    self.excel_service = ExcelService()
 
-    # Diccionario de rubros y sus archivos correspondientes
-    self.rubros_archivos = {
-        "Ferretería": "ferreteria.xlsx",
-        "Refrigeración": "refrigeracion.xlsx",
-        "Electricidad": "electricidad.xlsx",
+    # Mapeo de nombres para la interfaz
+    self.rubros_map = {
+        "Ferretería": "ferreteria",
+        "Refrigeración": "refrigeracion",
+        "Electricidad": "electricidad",
     }
 
     # ==========================================
@@ -39,11 +32,7 @@ class VentanaActualizarPrecios:
 
     self.crear_interfaz()
 
-  # ==========================================
-  # INTERFAZ
-  # ==========================================
   def crear_interfaz(self):
-    # Título
     titulo = ctk.CTkLabel(
         self.ventana,
         text="ACTUALIZAR PRECIOS",
@@ -51,11 +40,9 @@ class VentanaActualizarPrecios:
     )
     titulo.pack(pady=(25, 15))
 
-    # Frame principal de formulario
     frame_form = ctk.CTkFrame(self.ventana)
     frame_form.pack(fill="both", expand=True, padx=30, pady=10)
 
-    # Seleccionar Rubro
     lbl_rubro = ctk.CTkLabel(
         frame_form,
         text="Seleccionar Rubro:",
@@ -63,13 +50,12 @@ class VentanaActualizarPrecios:
     )
     lbl_rubro.pack(anchor="w", padx=20, pady=(15, 5))
 
-    opciones_rubro = ["Todos los rubros"] + list(self.rubros_archivos.keys())
+    opciones_rubro = ["Todos los rubros"] + list(self.rubros_map.keys())
     self.combo_rubro = ctk.CTkOptionMenu(
         frame_form, values=opciones_rubro, width=380, height=35
     )
     self.combo_rubro.pack(padx=20, pady=(0, 15))
 
-    # Porcentaje de Aumento/Descuento
     lbl_porcentaje = ctk.CTkLabel(
         frame_form,
         text="Porcentaje de modificación (%):",
@@ -93,7 +79,6 @@ class VentanaActualizarPrecios:
     )
     lbl_info.pack(anchor="w", padx=20, pady=(0, 15))
 
-    # Botones
     frame_botones = ctk.CTkFrame(self.ventana, fg_color="transparent")
     frame_botones.pack(fill="x", padx=30, pady=(10, 20))
 
@@ -121,113 +106,63 @@ class VentanaActualizarPrecios:
     )
     btn_cancelar.pack(side="right", padx=(10, 20))
 
-  # ==========================================
-  # LÓGICA DE ACTUALIZACIÓN DE PRECIOS
-  # ==========================================
   def aplicar_actualizacion(self):
-      texto_porcentaje = self.entry_porcentaje.get().strip().replace(",", ".")
+    texto_porcentaje = self.entry_porcentaje.get().strip().replace(",", ".")
 
-      try:
-        porcentaje = float(texto_porcentaje)
-        if porcentaje == 0:
-          messagebox.showwarning(
-              "Atención",
-              "El porcentaje ingresado debe ser distinto de 0.",
-              parent=self.ventana,
-          )
-          return
-      except ValueError:
-        messagebox.showerror(
-            "Error",
-            "Por favor, ingrese un número válido para el porcentaje.",
+    try:
+      porcentaje = float(texto_porcentaje)
+      if porcentaje == 0:
+        messagebox.showwarning(
+            "Atención",
+            "El porcentaje ingresado debe ser distinto de 0.",
             parent=self.ventana,
         )
         return
+    except ValueError:
+      messagebox.showerror(
+          "Error",
+          "Por favor, ingrese un número válido para el porcentaje.",
+          parent=self.ventana,
+      )
+      return
 
-      rubro_seleccionado = self.combo_rubro.get()
+    seleccion_combo = self.combo_rubro.get()
+    rubro_clave = self.rubros_map.get(
+        seleccion_combo, None
+    )  # None si elige "Todos los rubros"
 
-      tipo_operacion = "Aumento" if porcentaje > 0 else "Descuento"
-      mensaje_conf = (
-          f"¿Está seguro de aplicar un {tipo_operacion} del {abs(porcentaje)}% "
-          f"en los productos de: '{rubro_seleccionado}'?"
+    tipo_operacion = "Aumento" if porcentaje > 0 else "Descuento"
+    mensaje_conf = (
+        f"¿Está seguro de aplicar un {tipo_operacion} del {abs(porcentaje)}% "
+        f"a: '{seleccion_combo}'?"
+    )
+
+    confirmar = messagebox.askyesno(
+        "Confirmar Actualización", mensaje_conf, parent=self.ventana
+    )
+    if not confirmar:
+      return
+
+    try:
+      # Llama al método de ExcelService
+      modificados = self.excel_service.actualizar_precios_por_porcentaje(
+          porcentaje=porcentaje, rubro=rubro_clave
       )
 
-      confirmar = messagebox.askyesno(
-          "Confirmar Actualización", mensaje_conf, parent=self.ventana
+      messagebox.showinfo(
+          "Éxito",
+          f"Se actualizaron correctamente los precios de {modificados} productos.",
+          parent=self.ventana,
       )
-      if not confirmar:
-        return
 
-      # Determinar qué archivos procesar
-      archivos_a_procesar = []
-      if rubro_seleccionado == "Todos los rubros":
-        archivos_a_procesar = list(self.rubros_archivos.values())
-      else:
-        archivos_a_procesar = [self.rubros_archivos[rubro_seleccionado]]
+      if self.callback_actualizado:
+        self.callback_actualizado()
 
-      factor_multiplicador = 1 + (porcentaje / 100.0)
-      productos_modificados = 0
+      self.ventana.destroy()
 
-      try:
-        for nombre_archivo in archivos_a_procesar:
-          ruta_excel = self.carpeta_datos / nombre_archivo
-
-          if not ruta_excel.exists():
-            continue
-
-          # Cargar libro sin data_only para permitir escritura
-          wb = load_workbook(ruta_excel)
-          ws = wb.active
-
-          # Recorrer las filas directamente desde la fila 2 hasta la última fila con datos
-          for fila_idx in range(2, ws.max_row + 1):
-            celda_id = ws.cell(row=fila_idx, column=1)  # Columna A (ID)
-            celda_precio = ws.cell(
-                row=fila_idx, column=6
-            )  # Columna F (Precio - Columna 6)
-
-            # Si la fila tiene un ID de producto válido
-            if celda_id.value is not None:
-              val_precio = celda_precio.value
-
-              if val_precio is not None:
-                # Limpiar posibles caracteres de texto
-                val_clean = (
-                    str(val_precio)
-                    .replace("$", "")
-                    .replace(",", "")
-                    .replace(" ", "")
-                    .strip()
-                )
-
-                try:
-                  precio_actual = float(val_clean)
-                  nuevo_precio = round(precio_actual * factor_multiplicador, 2)
-
-                  # Guardar el número resultante
-                  celda_precio.value = nuevo_precio
-                  productos_modificados += 1
-                except ValueError:
-                  continue
-
-          wb.save(ruta_excel)
-          wb.close()
-
-        messagebox.showinfo(
-            "Éxito",
-            f"Se actualizaron correctamente {productos_modificados} productos.",
-            parent=self.ventana,
-        )
-
-        # Refrescar la tabla en la ventana principal
-        if self.callback_actualizado:
-          self.callback_actualizado()
-
-        self.ventana.destroy()
-
-      except Exception as error:
-        messagebox.showerror(
-            "Error",
-            f"Ocurrió un error al intentar actualizar los precios:\n\n{error}",
-            parent=self.ventana,
-        )
+    except Exception as error:
+      messagebox.showerror(
+          "Error",
+          f"Ocurrió un error al intentar actualizar los precios:\n\n{error}",
+          parent=self.ventana,
+      )
