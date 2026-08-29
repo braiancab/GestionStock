@@ -201,114 +201,7 @@ class VentanaPrincipal:
         )
 
 
-        # ==========================================
-        # FRAME DE BOTONES
-        # ==========================================
-
-        # frame_botones = ctk.CTkFrame(
-        #     frame_principal,
-        #     fg_color="transparent"
-        # )
-
-        # frame_botones.grid(
-        #     row=1,
-        #     column=0,
-        #     padx=15,
-        #     pady=(0, 10),
-        #     sticky="w"
-        # )
-
-      
-
-
-
-        # # Botón nuevo producto
-
-        # boton_nuevo = ctk.CTkButton(
-        #     frame_botones,
-        #     text="+ Nuevo producto",
-        #     command=self.nuevo_producto
-        # )
-
-        # boton_nuevo.grid(
-        #     row=0,
-        #     column=0,
-        #     padx=(0, 10)
-        # )
-
-        # boton_variante = ctk.CTkButton(
-        #     frame_botones,
-        #     text="Agregar Variante",
-        #     command=self.agregar_variante
-        # )
-
-        # boton_variante.grid(
-        #     row=0,
-        #     column=3,
-        #     padx=10
-        # )
-
-        # # Botón modificar
-
-        # boton_modificar = ctk.CTkButton(
-        #     frame_botones,
-        #     text="Modificar",
-        #     command=self.modificar_producto
-        # )
-
-        # boton_modificar.grid(
-        #     row=0,
-        #     column=1,
-        #     padx=10
-        # )
-
-
-        # # Botón eliminar
-
-        # boton_eliminar = ctk.CTkButton(
-        #     frame_botones,
-        #     text="Eliminar",
-        #     command=self.eliminar_producto
-        # )
-
-        # boton_eliminar.grid(
-        #     row=0,
-        #     column=2,
-        #     padx=10
-        # )
-
-
-        # # ==========================================
-        # # BOTÓN REGISTRAR VENTA
-        # # ==========================================
-
-        # boton_venta = ctk.CTkButton(
-        #     frame_botones,
-        #     text="Registrar venta",
-        #     command=self.abrir_venta
-        # )
-
-        # boton_venta.grid(
-        #     row=0,
-        #     column=4,
-        #     padx=10
-        # )
-
-        # # ==========================================
-        # # BOTÓN HISTORIAL DE VENTAS
-        # # ==========================================
-
-        # boton_historial = ctk.CTkButton(
-        #     frame_botones,
-        #     text="Historial de ventas",
-        #     command=self.abrir_historial_ventas
-        # )
-
-        # boton_historial.grid(
-        #     row=0,
-        #     column=5,
-        #     padx=10
-        # )
+       
 
         # ==========================================
         # BOTONES DE RUBRO
@@ -556,7 +449,8 @@ class VentanaPrincipal:
             sticky="ns"
         )
 
-
+        # Evento de doble clic sobre una fila de la tabla
+        self.tabla.bind("<Double-1>", self.abrir_opciones_producto)
 
     # ==========================================
     # CARGAR PRODUCTOS
@@ -1143,4 +1037,93 @@ class VentanaPrincipal:
         self.ventana,
         self.excel_service
     )
-        
+
+    # ==========================================
+    # VENTANA DE OPCIONES AL HACER DOBLE CLIC
+    # ==========================================
+    def abrir_opciones_producto(self, evento=None):
+      seleccion = self.tabla.selection()
+
+      if not seleccion:
+        return
+
+      elemento = self.tabla.item(seleccion[0])
+      datos = elemento["values"]
+
+      id_prod = datos[0]
+      nombre_prod = datos[1]
+
+      # Crear ventana modal emergente
+      ventana_opciones = ctk.CTkToplevel(self.ventana)
+      ventana_opciones.title("Opciones de Producto")
+      ventana_opciones.geometry("400x320")
+      ventana_opciones.resizable(False, False)
+      ventana_opciones.transient(self.ventana)
+      ventana_opciones.grab_set()
+
+      # Título con nombre del producto
+      lbl_titulo = ctk.CTkLabel(
+          ventana_opciones,
+          text=f"PRODUCTO #{id_prod}",
+          font=ctk.CTkFont(size=20, weight="bold"),
+      )
+      lbl_titulo.pack(pady=(20, 5))
+
+      lbl_subtitulo = ctk.CTkLabel(
+          ventana_opciones,
+          text=f"{nombre_prod}",
+          font=ctk.CTkFont(size=14),
+          text_color="gray",
+      )
+      lbl_subtitulo.pack(pady=(0, 20))
+
+      # Frame para los botones de acción
+      frame_acciones = ctk.CTkFrame(ventana_opciones, fg_color="transparent")
+      frame_acciones.pack(fill="both", expand=True, padx=30, pady=10)
+
+      # Auxiliares para cerrar la ventana modal y llamar a la función seleccionada
+      def accion_modificar():
+        ventana_opciones.destroy()
+        self.modificar_producto()
+
+      def accion_variante():
+        ventana_opciones.destroy()
+        self.agregar_variante()
+
+      def accion_eliminar():
+        ventana_opciones.destroy()
+        self.eliminar_producto()
+
+      # Botón Modificar
+      btn_modificar = ctk.CTkButton(
+          frame_acciones,
+          text="Modificar producto",
+          command=accion_modificar,
+          height=38,
+          font=ctk.CTkFont(size=13, weight="bold"),
+      )
+      btn_modificar.pack(fill="x", pady=6)
+
+      # Botón Agregar Variante
+      btn_variante = ctk.CTkButton(
+          frame_acciones,
+          text="Agregar variante",
+          command=accion_variante,
+          fg_color="#2b8a3e",
+          hover_color="#1f632d",
+          height=38,
+          font=ctk.CTkFont(size=13, weight="bold"),
+      )
+      btn_variante.pack(fill="x", pady=6)
+
+      # Botón Eliminar
+      btn_eliminar = ctk.CTkButton(
+          frame_acciones,
+          text="Eliminar producto",
+          command=accion_eliminar,
+          fg_color="#c92a2a",
+          hover_color="#961f1f",
+          height=38,
+          font=ctk.CTkFont(size=13, weight="bold"),
+      )
+      btn_eliminar.pack(fill="x", pady=6)
