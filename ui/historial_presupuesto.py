@@ -432,11 +432,11 @@ class HistorialPresupuestos:
         else:
           subprocess.call(["xdg-open", ruta_pdf])
 
-        messagebox.showinfo(
-            "PDF",
-            f"Se abrió correctamente el presupuesto:\n{ruta_pdf}",
-            parent=ventana_padre,
-        )
+        # messagebox.showinfo(
+        #     "PDF",
+        #     f"Se abrió correctamente el presupuesto:\n{ruta_pdf}",
+        #     parent=ventana_padre,
+        # )
       except Exception as e:
         messagebox.showerror(
             "Error",

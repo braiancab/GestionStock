@@ -638,31 +638,31 @@ class VentanaPresupuesto:
 
         )
 
-        boton_pdf = ctk.CTkButton(
+        # boton_pdf = ctk.CTkButton(
 
-            frame_inferior,
+        #     frame_inferior,
 
-            text="GENERAR PDF",
+        #     text="GENERAR PDF",
 
-            command=self.generar_pdf,
+        #     command=self.generar_pdf,
 
-            width=180,
+        #     width=180,
 
-            height=40
+        #     height=40
 
-        )
+        # )
 
-        boton_pdf.grid(
+        # boton_pdf.grid(
 
-            row=0,
+        #     row=0,
 
-            column=3,
+        #     column=3,
 
-            padx=10,
+        #     padx=10,
 
-            pady=10
+        #     pady=10
 
-        )
+        # )
 
     # ==========================================
     # OBTENER NOMBRES ÚNICOS
@@ -1707,118 +1707,118 @@ class VentanaPresupuesto:
     # GENERAR PDF
     # ==========================================
 
-    def generar_pdf(self):
+    # def generar_pdf(self):
 
-        cliente = (
-            self.entry_cliente.get().strip()
-        )
+    #     cliente = (
+    #         self.entry_cliente.get().strip()
+    #     )
 
         
 
 
-        # ==========================================
-        # VALIDACIONES
-        # ==========================================
+    #     # ==========================================
+    #     # VALIDACIONES
+    #     # ==========================================
 
-        if not cliente:
+    #     if not cliente:
 
-            messagebox.showwarning(
+    #         messagebox.showwarning(
 
-                "Atención",
+    #             "Atención",
 
-                "Debe ingresar el cliente."
+    #             "Debe ingresar el cliente."
 
-            )
+    #         )
 
-            return
-
-
-        if not self.productos_presupuesto:
-
-            messagebox.showwarning(
-
-                "Atención",
-
-                "Debe agregar productos al presupuesto."
-
-            )
-
-            return
+    #         return
 
 
-        # ==========================================
-        # CALCULAR TOTAL
-        # ==========================================
+    #     if not self.productos_presupuesto:
 
-        total = self.calcular_total()
+    #         messagebox.showwarning(
 
+    #             "Atención",
 
-        # ==========================================
-        # GUARDAR SI TODAVIA NO FUE GUARDADO
-        # ==========================================
+    #             "Debe agregar productos al presupuesto."
 
-        if self.id_presupuesto is None:
+    #         )
 
-            resultado = self.guardar_presupuesto()
-
-            if not resultado:
-
-                return
+    #         return
 
 
-        # ==========================================
-        # GENERAR PDF
-        # ==========================================
+    #     # ==========================================
+    #     # CALCULAR TOTAL
+    #     # ==========================================
 
-        try:
-
-            fecha = datetime.now().strftime(
-                "%d/%m/%Y %H:%M:%S"
-            )
+    #     total = self.calcular_total()
 
 
-            ruta_pdf = (
+    #     # ==========================================
+    #     # GUARDAR SI TODAVIA NO FUE GUARDADO
+    #     # ==========================================
 
-                self.pdf_service.generar_pdf(
+    #     if self.id_presupuesto is None:
 
-                    id_presupuesto=self.id_presupuesto,
+    #         resultado = self.guardar_presupuesto()
 
-                    fecha=fecha,
+    #         if not resultado:
 
-                    cliente=cliente,
+    #             return
+
+
+    #     # ==========================================
+    #     # GENERAR PDF
+    #     # ==========================================
+
+    #     try:
+
+    #         fecha = datetime.now().strftime(
+    #             "%d/%m/%Y %H:%M:%S"
+    #         )
+
+
+    #         ruta_pdf = (
+
+    #             self.pdf_service.generar_pdf(
+
+    #                 id_presupuesto=self.id_presupuesto,
+
+    #                 fecha=fecha,
+
+    #                 cliente=cliente,
 
                     
 
-                    productos=self.productos_presupuesto,
+    #                 productos=self.productos_presupuesto,
 
-                    total=total,
+    #                 total=total,
 
-                    logo_path=None
+    #                 logo_path=None
 
-                )
+    #             )
 
-            )
-
-
-            messagebox.showinfo(
-
-                "PDF generado",
-
-                f"El presupuesto fue generado correctamente.\n\n"
-
-                f"Ubicación:\n{ruta_pdf}"
-
-            )
+    #         )
 
 
-        except Exception as error:
+    #         messagebox.showinfo(
 
-            messagebox.showerror(
+    #             "PDF generado",
 
-                "Error",
+    #             f"El presupuesto fue generado correctamente.\n\n"
 
-                f"No se pudo generar el PDF.\n\n"
+    #             f"Ubicación:\n{ruta_pdf}"
 
-                f"Detalle:\n{error}"
+    #         )
 
-            )
+
+    #     except Exception as error:
+
+    #         messagebox.showerror(
+
+    #             "Error",
+
+    #             f"No se pudo generar el PDF.\n\n"
+
+    #             f"Detalle:\n{error}"
+
+    #         )

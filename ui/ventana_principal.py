@@ -205,110 +205,110 @@ class VentanaPrincipal:
         # FRAME DE BOTONES
         # ==========================================
 
-        frame_botones = ctk.CTkFrame(
-            frame_principal,
-            fg_color="transparent"
-        )
+        # frame_botones = ctk.CTkFrame(
+        #     frame_principal,
+        #     fg_color="transparent"
+        # )
 
-        frame_botones.grid(
-            row=1,
-            column=0,
-            padx=15,
-            pady=(0, 10),
-            sticky="w"
-        )
+        # frame_botones.grid(
+        #     row=1,
+        #     column=0,
+        #     padx=15,
+        #     pady=(0, 10),
+        #     sticky="w"
+        # )
 
       
 
 
 
-        # Botón nuevo producto
+        # # Botón nuevo producto
 
-        boton_nuevo = ctk.CTkButton(
-            frame_botones,
-            text="+ Nuevo producto",
-            command=self.nuevo_producto
-        )
+        # boton_nuevo = ctk.CTkButton(
+        #     frame_botones,
+        #     text="+ Nuevo producto",
+        #     command=self.nuevo_producto
+        # )
 
-        boton_nuevo.grid(
-            row=0,
-            column=0,
-            padx=(0, 10)
-        )
+        # boton_nuevo.grid(
+        #     row=0,
+        #     column=0,
+        #     padx=(0, 10)
+        # )
 
-        boton_variante = ctk.CTkButton(
-            frame_botones,
-            text="Agregar Variante",
-            command=self.agregar_variante
-        )
+        # boton_variante = ctk.CTkButton(
+        #     frame_botones,
+        #     text="Agregar Variante",
+        #     command=self.agregar_variante
+        # )
 
-        boton_variante.grid(
-            row=0,
-            column=3,
-            padx=10
-        )
+        # boton_variante.grid(
+        #     row=0,
+        #     column=3,
+        #     padx=10
+        # )
 
-        # Botón modificar
+        # # Botón modificar
 
-        boton_modificar = ctk.CTkButton(
-            frame_botones,
-            text="Modificar",
-            command=self.modificar_producto
-        )
+        # boton_modificar = ctk.CTkButton(
+        #     frame_botones,
+        #     text="Modificar",
+        #     command=self.modificar_producto
+        # )
 
-        boton_modificar.grid(
-            row=0,
-            column=1,
-            padx=10
-        )
-
-
-        # Botón eliminar
-
-        boton_eliminar = ctk.CTkButton(
-            frame_botones,
-            text="Eliminar",
-            command=self.eliminar_producto
-        )
-
-        boton_eliminar.grid(
-            row=0,
-            column=2,
-            padx=10
-        )
+        # boton_modificar.grid(
+        #     row=0,
+        #     column=1,
+        #     padx=10
+        # )
 
 
-        # ==========================================
-        # BOTÓN REGISTRAR VENTA
-        # ==========================================
+        # # Botón eliminar
 
-        boton_venta = ctk.CTkButton(
-            frame_botones,
-            text="Registrar venta",
-            command=self.abrir_venta
-        )
+        # boton_eliminar = ctk.CTkButton(
+        #     frame_botones,
+        #     text="Eliminar",
+        #     command=self.eliminar_producto
+        # )
 
-        boton_venta.grid(
-            row=0,
-            column=4,
-            padx=10
-        )
+        # boton_eliminar.grid(
+        #     row=0,
+        #     column=2,
+        #     padx=10
+        # )
 
-        # ==========================================
-        # BOTÓN HISTORIAL DE VENTAS
-        # ==========================================
 
-        boton_historial = ctk.CTkButton(
-            frame_botones,
-            text="Historial de ventas",
-            command=self.abrir_historial_ventas
-        )
+        # # ==========================================
+        # # BOTÓN REGISTRAR VENTA
+        # # ==========================================
 
-        boton_historial.grid(
-            row=0,
-            column=5,
-            padx=10
-        )
+        # boton_venta = ctk.CTkButton(
+        #     frame_botones,
+        #     text="Registrar venta",
+        #     command=self.abrir_venta
+        # )
+
+        # boton_venta.grid(
+        #     row=0,
+        #     column=4,
+        #     padx=10
+        # )
+
+        # # ==========================================
+        # # BOTÓN HISTORIAL DE VENTAS
+        # # ==========================================
+
+        # boton_historial = ctk.CTkButton(
+        #     frame_botones,
+        #     text="Historial de ventas",
+        #     command=self.abrir_historial_ventas
+        # )
+
+        # boton_historial.grid(
+        #     row=0,
+        #     column=5,
+        #     padx=10
+        # )
 
         # ==========================================
         # BOTONES DE RUBRO
