@@ -299,9 +299,9 @@ class HistorialPresupuestos:
         productos.append({
             "producto": fila[4],
             "variante": fila[5],
-            "cantidad": fila[6],
-            "precio": fila[7],
-            "subtotal": fila[8],
+            "cantidad": fila[7],
+            "precio": fila[8],
+            "subtotal": fila[9],
         })
 
       wb.close()
