@@ -6,7 +6,7 @@ import customtkinter as ctk
 from openpyxl import load_workbook
 from tkinter import ttk, messagebox
 
-
+from datetime import datetime
 class HistorialPresupuestos:
 
   def __init__(self, ventana_padre):
@@ -169,8 +169,24 @@ class HistorialPresupuestos:
 
       wb.close()
 
+      #self.presupuestos = list(presupuestos_dict.values())
+      #self.presupuestos.sort(key=lambda x: str(x["id"]), reverse=True)
       self.presupuestos = list(presupuestos_dict.values())
-      self.presupuestos.sort(key=lambda x: str(x["id"]), reverse=True)
+
+      # Función para parsear la fecha y hora almacenada (formato: "DD/MM/YYYY HH:MM:SS")
+      def obtener_fecha_dt(item):
+        try:
+          return datetime.strptime(str(item["fecha"]), "%d/%m/%Y %H:%M:%S")
+        except Exception:
+          # Si falla el parseo o la fecha no coincide exactamente con el formato,
+          # intenta usar el ID o una fecha mínima de respaldo
+          return datetime.min
+
+
+      # Ordenar de más reciente a más antiguo (reverse=True)
+      self.presupuestos.sort(key=obtener_fecha_dt, reverse=True)
+
+
 
       self.mostrar_presupuestos(self.presupuestos)
 
