@@ -7,7 +7,7 @@ from ui.formulario_producto import FormularioProducto
 from ui.ventana_venta import VentanaVenta
 from ui.historial_ventas import HistorialVentas
 from ui.ventana_presupuesto import VentanaPresupuesto
-from ui.historial_presupuesto import VentanaHistorialPresupuestos
+from ui.historial_presupuesto import HistorialPresupuestos
 
 class VentanaPrincipal:
 
@@ -610,7 +610,7 @@ class VentanaPrincipal:
 
 
     def abrir_historial_presupuestos(self):
-        VentanaHistorialPresupuestos(
+        HistorialPresupuestos(
             self.ventana
         )
     # ==========================================
