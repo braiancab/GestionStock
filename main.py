@@ -1,5 +1,5 @@
 import customtkinter as ctk
-
+import sys
 from services.excel_service import ExcelService
 from ui.ventana_principal import VentanaPrincipal
 
@@ -9,10 +9,11 @@ def iniciar_aplicacion():
     aplicacion = VentanaPrincipal()
 
     aplicacion.ejecutar()
-   
+    
 
    
 
 
 if __name__ == "__main__":
     iniciar_aplicacion()
+    

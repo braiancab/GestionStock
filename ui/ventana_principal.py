@@ -9,6 +9,8 @@ from ui.historial_ventas import HistorialVentas
 from ui.ventana_presupuesto import VentanaPresupuesto
 from ui.historial_presupuesto import HistorialPresupuestos
 from ui.actualizar_productos import VentanaActualizarPrecios
+from ui.reportes import VentanaReportes
+import sys
 
 class VentanaPrincipal:
 
@@ -22,8 +24,10 @@ class VentanaPrincipal:
 
 
         self.ventana = ctk.CTk()
+        self.ventana.protocol("WM_DELETE_WINDOW", self.cerrar_aplicacion)
 
         self.ventana.title("Pablo Gestor Stock")
+
 
         self.ventana.state("zoomed")      # Maximizada
 
@@ -40,6 +44,9 @@ class VentanaPrincipal:
 
         # Cargar productos del Excel
         self.cargar_productos()
+
+
+        
 
 
     def crear_interfaz(self):
@@ -577,6 +584,9 @@ class VentanaPrincipal:
         )
 
 
+
+    def abrir_reportes(self):
+        VentanaReportes(self.ventana)
     # ==========================================
     # MODIFICAR PRODUCTO
     # ==========================================
@@ -1005,6 +1015,27 @@ class VentanaPrincipal:
             menu=menu_presupuestos
         )
 
+
+        ###
+        # MENU REPORTES
+        ###
+
+        menu_reportes = tk.Menu(
+            barra_menu,
+            tearoff=0,
+            font=("Arial", 14)
+        )
+
+        menu_reportes.add_command(
+            label="Reporte de ventas", 
+            command=self.abrir_reportes
+        )
+
+        barra_menu.add_cascade(
+            label="Reportes",
+            menu=menu_reportes
+        )
+
         # ==========================
         # ASIGNAR MENU
         # ==========================
@@ -1127,3 +1158,16 @@ class VentanaPrincipal:
           font=ctk.CTkFont(size=13, weight="bold"),
       )
       btn_eliminar.pack(fill="x", pady=6)
+
+    def cerrar_aplicacion(self):
+    # Oculta la ventana primero para dar sensación de cierre instantáneo
+        self.ventana.withdraw()
+
+    # Destruye la ventana capturando cualquier alerta en segundo plano de Tkinter
+        try:
+            self.ventana.quit()
+            self.ventana.destroy()
+        except Exception:
+            pass
+
+       
